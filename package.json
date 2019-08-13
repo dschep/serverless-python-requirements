@@ -46,7 +46,6 @@
     "eslint": "^5.16.0",
     "prettier": "*",
     "cross-spawn": "*",
-    "deasync-promise": "*",
     "tape": "*"
   },
   "dependencies": {
