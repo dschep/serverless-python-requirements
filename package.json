@@ -66,6 +66,10 @@
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    },
     "env": {
       "node": true,
       "es6": true
@@ -73,7 +77,6 @@
   },
   "prettier": {
     "semi": true,
-    "singleQuote": true,
-    "parser": "babel"
+    "singleQuote": true
   }
 }

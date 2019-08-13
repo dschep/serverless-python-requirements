@@ -1,5 +1,4 @@
 const crossSpawn = require('cross-spawn');
-const deasync = require('deasync-promise');
 const glob = require('glob-all');
 const JSZip = require('jszip');
 const tape = require('tape');
@@ -239,10 +238,7 @@ test(
 
     const zipfiles = listZipFiles('.serverless/sls-py-req-test.zip');
     t.true(zipfiles.includes(`flask${sep}__init__.py`), 'flask is packaged');
-    t.true(
-      zipfiles.includes(`boto3${sep}__init__.py`),
-      'boto3 is packaged'
-    );
+    t.true(zipfiles.includes(`boto3${sep}__init__.py`), 'boto3 is packaged');
     t.end();
   },
   { skip: !canUseDocker() }
@@ -1113,7 +1109,9 @@ test(
     npm(['i', path]);
     sls(['package']);
 
-    const zipfiles_hello1 = await listZipFilesWithMetaData('.serverless/hello1.zip');
+    const zipfiles_hello1 = await listZipFilesWithMetaData(
+      '.serverless/hello1.zip'
+    );
 
     t.true(
       zipfiles_hello1['module1/foobar'].unixPermissions
@@ -1122,8 +1120,11 @@ test(
       'foobar has retained its executable file permissions'
     );
 
-    const zipfiles_hello2 = await listZipFilesWithMetaData('.serverless/module2-sls-py-req-test-indiv-dev-hello2.zip');
-    const flaskPerm = statSync('.serverless/module2/requirements/bin/flask').mode;
+    const zipfiles_hello2 = await listZipFilesWithMetaData(
+      '.serverless/module2-sls-py-req-test-indiv-dev-hello2.zip'
+    );
+    const flaskPerm = statSync('.serverless/module2/requirements/bin/flask')
+      .mode;
 
     t.true(
       zipfiles_hello2['bin/flask'].unixPermissions === flaskPerm,
@@ -1147,7 +1148,9 @@ test(
     npm(['i', path]);
     sls(['--dockerizePip=true', 'package']);
 
-    const zipfiles_hello = await listZipFilesWithMetaData('.serverless/hello1.zip');
+    const zipfiles_hello = await listZipFilesWithMetaData(
+      '.serverless/hello1.zip'
+    );
 
     t.true(
       zipfiles_hello['module1/foobar'].unixPermissions
@@ -1156,8 +1159,11 @@ test(
       'foobar has retained its executable file permissions'
     );
 
-    const zipfiles_hello2 = await listZipFilesWithMetaData('.serverless/module2-sls-py-req-test-indiv-dev-hello2.zip');
-    const flaskPerm = statSync('.serverless/module2/requirements/bin/flask').mode;
+    const zipfiles_hello2 = await listZipFilesWithMetaData(
+      '.serverless/module2-sls-py-req-test-indiv-dev-hello2.zip'
+    );
+    const flaskPerm = statSync('.serverless/module2/requirements/bin/flask')
+      .mode;
 
     t.true(
       zipfiles_hello2['bin/flask'].unixPermissions === flaskPerm,
@@ -1186,10 +1192,7 @@ test('uses download cache by defaul option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
-  sls([
-    '--cacheLocation=.requirements-cache',
-    'package'
-  ]);
+  sls(['--cacheLocation=.requirements-cache', 'package']);
   t.true(
     pathExistsSync(`.requirements-cache${sep}downloadCacheslspyc${sep}http`),
     'cache directoy exists'
@@ -1258,10 +1261,7 @@ test(
     process.chdir('tests/base');
     const path = npm(['pack', '../..']);
     npm(['i', path]);
-    sls([
-      '--dockerizePip=true',
-      'package'
-    ]);
+    sls(['--dockerizePip=true', 'package']);
     const cachepath = getUserCachePath();
     const cacheFolderHash = sha256Path('.serverless/requirements.txt');
     t.true(
@@ -1337,11 +1337,7 @@ test(
     process.chdir('tests/base');
     const path = npm(['pack', '../..']);
     npm(['i', path]);
-    sls([
-      '--dockerizePip=true',
-      '--slim=true',
-      'package'
-    ]);
+    sls(['--dockerizePip=true', '--slim=true', 'package']);
     const cachepath = getUserCachePath();
     const cacheFolderHash = sha256Path('.serverless/requirements.txt');
     t.true(
@@ -1360,11 +1356,7 @@ test(
       `${cachepath}${sep}${cacheFolderHash}_slspyc${sep}injected_file_is_bad_form`,
       'injected new file into static cache folder'
     );
-    sls([
-      '--dockerizePip=true',
-      '--slim=true',
-      'package'
-    ]);
+    sls(['--dockerizePip=true', '--slim=true', 'package']);
 
     const zipfiles = await listZipFiles('.serverless/sls-py-req-test.zip');
     t.true(
@@ -1388,11 +1380,7 @@ test(
     process.chdir('tests/base');
     const path = npm(['pack', '../..']);
     npm(['i', path]);
-    sls([
-      '--dockerizePip=true',
-      '--slim=true',
-      'package'
-    ]);
+    sls(['--dockerizePip=true', '--slim=true', 'package']);
     const cachepath = getUserCachePath();
     t.true(
       pathExistsSync(`${cachepath}${sep}downloadCacheslspyc${sep}http`),
