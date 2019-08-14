@@ -76,11 +76,12 @@ const teardown = () => {
   removeSync('tests/base with a space');
 };
 
-const test = (desc, func, opts = {}) =>
-  tape.test(desc, opts, async t => {
+const test = (plan, desc, func, opts = {}) =>
+  tape.test(desc, opts, t => {
     setup();
+    t.plan(plan);
     try {
-      await func(t);
+      func(t);
     } catch (err) {
       t.fail(err);
       t.end();
@@ -111,7 +112,7 @@ const canUseDocker = () => {
   return result.status === 0;
 };
 
-test('default pythonBin can package flask with default options', async t => {
+test(2, 'default pythonBin can package flask with default options', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -122,7 +123,7 @@ test('default pythonBin can package flask with default options', async t => {
   t.end();
 });
 
-test('can package flask with default options', async t => {
+test(2, 'can package flask with default options', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -134,6 +135,7 @@ test('can package flask with default options', async t => {
 });
 
 test(
+  1,
   'can package flask with hashes',
   async t => {
     process.chdir('tests/base');
@@ -147,7 +149,7 @@ test(
   { skip: process.env.RUNTIME === 'python2.7' }
 );
 
-test('can package flask with zip option', async t => {
+test(3, 'can package flask with zip option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -165,7 +167,7 @@ test('can package flask with zip option', async t => {
   t.end();
 });
 
-test('can package flask with slim option', async t => {
+test(3, 'can package flask with slim option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -188,7 +190,7 @@ test('can package flask with slim option', async t => {
  * News tests NOT in test.bats
  */
 
-test('can package flask with slim & slimPatterns options', async t => {
+test(3, 'can package flask with slim & slimPatterns options', async t => {
   process.chdir('tests/base');
 
   copySync('_slimPatterns.yml', 'slimPatterns.yml');
@@ -210,7 +212,7 @@ test('can package flask with slim & slimPatterns options', async t => {
   t.end();
 });
 
-test("doesn't package bottle with noDeploy option", async t => {
+test(2, "doesn't package bottle with noDeploy option", async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -229,6 +231,7 @@ test("doesn't package bottle with noDeploy option", async t => {
 });
 
 test(
+  2,
   'can package flask with dockerizePip option',
   async t => {
     process.chdir('tests/base');
@@ -245,6 +248,7 @@ test(
 );
 
 test(
+  3,
   'can package flask with slim & dockerizePip option',
   async t => {
     process.chdir('tests/base');
@@ -268,6 +272,7 @@ test(
 );
 
 test(
+  3,
   'can package flask with slim & dockerizePip & slimPatterns options',
   async t => {
     process.chdir('tests/base');
@@ -294,6 +299,7 @@ test(
 );
 
 test(
+  4,
   'can package flask with zip & dockerizePip option',
   async t => {
     process.chdir('tests/base');
@@ -327,6 +333,7 @@ test(
 );
 
 test(
+  4,
   'can package flask with zip & slim & dockerizePip option',
   async t => {
     process.chdir('tests/base');
@@ -359,7 +366,7 @@ test(
   { skip: !canUseDocker() }
 );
 
-test('pipenv can package flask with default options', async t => {
+test(2, 'pipenv can package flask with default options', async t => {
   process.chdir('tests/pipenv');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -370,7 +377,7 @@ test('pipenv can package flask with default options', async t => {
   t.end();
 });
 
-test('pipenv can package flask with slim option', async t => {
+test(3, 'pipenv can package flask with slim option', async t => {
   process.chdir('tests/pipenv');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -389,7 +396,7 @@ test('pipenv can package flask with slim option', async t => {
   t.end();
 });
 
-test('pipenv can package flask with slim & slimPatterns options', async t => {
+test(3, 'pipenv can package flask with slim & slimPatterns options', async t => {
   process.chdir('tests/pipenv');
 
   copySync('_slimPatterns.yml', 'slimPatterns.yml');
@@ -411,7 +418,7 @@ test('pipenv can package flask with slim & slimPatterns options', async t => {
   t.end();
 });
 
-test('pipenv can package flask with zip option', async t => {
+test(3, 'pipenv can package flask with zip option', async t => {
   process.chdir('tests/pipenv');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -429,7 +436,7 @@ test('pipenv can package flask with zip option', async t => {
   t.end();
 });
 
-test("pipenv doesn't package bottle with noDeploy option", async t => {
+test(2, "pipenv doesn't package bottle with noDeploy option", async t => {
   process.chdir('tests/pipenv');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -447,7 +454,7 @@ test("pipenv doesn't package bottle with noDeploy option", async t => {
   t.end();
 });
 
-test('non build pyproject.toml uses requirements.txt', async t => {
+test(2, 'non build pyproject.toml uses requirements.txt', async t => {
   process.chdir('tests/non_build_pyproject');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -458,7 +465,7 @@ test('non build pyproject.toml uses requirements.txt', async t => {
   t.end();
 });
 
-test('poetry can package flask with default options', async t => {
+test(3, 'poetry can package flask with default options', async t => {
   process.chdir('tests/poetry');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -470,7 +477,7 @@ test('poetry can package flask with default options', async t => {
   t.end();
 });
 
-test('poetry can package flask with slim option', async t => {
+test(3, 'poetry can package flask with slim option', async t => {
   process.chdir('tests/poetry');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -489,7 +496,7 @@ test('poetry can package flask with slim option', async t => {
   t.end();
 });
 
-test('poetry can package flask with slim & slimPatterns options', async t => {
+test(3'poetry can package flask with slim & slimPatterns options', async t => {
   process.chdir('tests/poetry');
 
   copySync('_slimPatterns.yml', 'slimPatterns.yml');
@@ -511,7 +518,7 @@ test('poetry can package flask with slim & slimPatterns options', async t => {
   t.end();
 });
 
-test('poetry can package flask with zip option', async t => {
+test(3, 'poetry can package flask with zip option', async t => {
   process.chdir('tests/poetry');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -529,7 +536,7 @@ test('poetry can package flask with zip option', async t => {
   t.end();
 });
 
-test("poetry doesn't package bottle with noDeploy option", async t => {
+test(2, "poetry doesn't package bottle with noDeploy option", async t => {
   process.chdir('tests/poetry');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -547,7 +554,7 @@ test("poetry doesn't package bottle with noDeploy option", async t => {
   t.end();
 });
 
-test('can package flask with zip option and no explicit include', async t => {
+test(3, 'can package flask with zip option and no explicit include', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -567,7 +574,7 @@ test('can package flask with zip option and no explicit include', async t => {
   t.end();
 });
 
-test('can package lambda-decorators using vendor option', async t => {
+test(3, 'can package lambda-decorators using vendor option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -583,6 +590,7 @@ test('can package lambda-decorators using vendor option', async t => {
 });
 
 test(
+  6,
   "Don't nuke execute perms",
   async t => {
     process.chdir('tests/base');
@@ -631,7 +639,7 @@ test(
   { skip: process.platform === 'win32' }
 );
 
-test('can package flask in a project with a space in it', async t => {
+test(2, 'can package flask in a project with a space in it', async t => {
   copySync('tests/base', 'tests/base with a space');
   process.chdir('tests/base with a space');
   const path = npm(['pack', '../..']);
@@ -644,6 +652,7 @@ test('can package flask in a project with a space in it', async t => {
 });
 
 test(
+  2,
   'can package flask in a project with a space in it with docker',
   async t => {
     copySync('tests/base', 'tests/base with a space');
@@ -659,7 +668,7 @@ test(
   { skip: !canUseDocker() }
 );
 
-test('supports custom file name with fileName option', async t => {
+test(3, 'supports custom file name with fileName option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   writeFileSync('puck', 'requests');
@@ -675,7 +684,7 @@ test('supports custom file name with fileName option', async t => {
   t.end();
 });
 
-test("doesn't package bottle with zip option", async t => {
+test(5, "doesn't package bottle with zip option", async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -711,7 +720,7 @@ test("doesn't package bottle with zip option", async t => {
   t.end();
 });
 
-test('can package flask with slim, slimPatterns & slimPatternsAppendDefaults=false options', async t => {
+test(4, 'can package flask with slim, slimPatterns & slimPatternsAppendDefaults=false options', async t => {
   process.chdir('tests/base');
   copySync('_slimPatterns.yml', 'slimPatterns.yml');
   const path = npm(['pack', '../..']);
@@ -733,6 +742,7 @@ test('can package flask with slim, slimPatterns & slimPatternsAppendDefaults=fal
 });
 
 test(
+  3,
   'can package flask with slim & dockerizePip & slimPatterns & slimPatternsAppendDefaults=false options',
   async t => {
     process.chdir('tests/base');
@@ -762,7 +772,7 @@ test(
   { skip: !canUseDocker() }
 );
 
-test('pipenv can package flask with slim & slimPatterns & slimPatternsAppendDefaults=false  option', async t => {
+test(3, 'pipenv can package flask with slim & slimPatterns & slimPatternsAppendDefaults=false  option', async t => {
   process.chdir('tests/pipenv');
   copySync('_slimPatterns.yml', 'slimPatterns.yml');
   const path = npm(['pack', '../..']);
@@ -783,7 +793,7 @@ test('pipenv can package flask with slim & slimPatterns & slimPatternsAppendDefa
   t.end();
 });
 
-test('poetry can package flask with slim & slimPatterns & slimPatternsAppendDefaults=false  option', async t => {
+test(3, 'poetry can package flask with slim & slimPatterns & slimPatternsAppendDefaults=false  option', async t => {
   process.chdir('tests/poetry');
   copySync('_slimPatterns.yml', 'slimPatterns.yml');
   const path = npm(['pack', '../..']);
@@ -804,7 +814,7 @@ test('poetry can package flask with slim & slimPatterns & slimPatternsAppendDefa
   t.end();
 });
 
-test('can package flask with package individually option', async t => {
+test(16, 'can package flask with package individually option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -887,7 +897,7 @@ test('can package flask with package individually option', async t => {
   t.end();
 });
 
-test('can package flask with package individually & slim option', async t => {
+test(15, 'can package flask with package individually & slim option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -970,7 +980,7 @@ test('can package flask with package individually & slim option', async t => {
   t.end();
 });
 
-test('can package only requirements of module', async t => {
+test(8, 'can package only requirements of module', async t => {
   process.chdir('tests/individually');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1019,7 +1029,7 @@ test('can package only requirements of module', async t => {
   t.end();
 });
 
-test('can package lambda-decorators using vendor and invidiually option', async t => {
+test(15, 'can package lambda-decorators using vendor and invidiually option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1098,6 +1108,7 @@ test('can package lambda-decorators using vendor and invidiually option', async 
 });
 
 test(
+  2,
   "Don't nuke execute perms when using individually",
   async t => {
     process.chdir('tests/individually');
@@ -1137,6 +1148,7 @@ test(
 );
 
 test(
+  2,
   "Don't nuke execute perms when using individually w/docker",
   async t => {
     process.chdir('tests/individually');
@@ -1175,7 +1187,7 @@ test(
   { skip: !canUseDocker() }
 );
 
-test('uses download cache by default option', async t => {
+test(1, 'uses download cache by default option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1188,7 +1200,7 @@ test('uses download cache by default option', async t => {
   t.end();
 });
 
-test('uses download cache by defaul option', async t => {
+test(1, 'uses download cache by defaul option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1201,6 +1213,7 @@ test('uses download cache by defaul option', async t => {
 });
 
 test(
+  1, 
   'uses download cache with dockerizePip option',
   async t => {
     process.chdir('tests/base');
@@ -1218,6 +1231,7 @@ test(
 );
 
 test(
+  1,
   'uses download cache with dockerizePip by default option',
   async t => {
     process.chdir('tests/base');
@@ -1237,7 +1251,7 @@ test(
   { skip: !canUseDocker() }
 );
 
-test('uses static and download cache', async t => {
+test(2, 'uses static and download cache', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1256,6 +1270,7 @@ test('uses static and download cache', async t => {
 });
 
 test(
+  2,
   'uses static and download cache with dockerizePip option',
   async t => {
     process.chdir('tests/base');
@@ -1278,6 +1293,7 @@ test(
 );
 
 test('uses static cache', async t => {
+  3,
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1311,7 +1327,7 @@ test('uses static cache', async t => {
   t.end();
 });
 
-test('uses static cache with cacheLocation option', async t => {
+test(2, 'uses static cache with cacheLocation option', async t => {
   process.chdir('tests/base');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
@@ -1332,6 +1348,7 @@ test('uses static cache with cacheLocation option', async t => {
 });
 
 test(
+  4, 
   'uses static cache with dockerizePip & slim option',
   async t => {
     process.chdir('tests/base');
@@ -1375,6 +1392,7 @@ test(
 );
 
 test(
+  3,
   'uses download cache with dockerizePip & slim option',
   async t => {
     process.chdir('tests/base');
@@ -1401,7 +1419,7 @@ test(
 );
 
 // From this point on, the version of the poetry is 1.0.0a0
-test('poetry1.0.0a0 py3.6 can package flask with default options', async t => {
+test(3, 'poetry1.0.0a0 py3.6 can package flask with default options', async t => {
   process.chdir('tests/poetry');
   const path = npm(['pack', '../..']);
   npm(['i', path]);
