@@ -6,6 +6,7 @@ const {
   chmodSync,
   removeSync,
   readFile,
+  readFileSync,
   copySync,
   writeFileSync,
   statSync,
