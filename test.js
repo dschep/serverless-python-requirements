@@ -5,7 +5,7 @@ const tape = require('tape');
 const {
   chmodSync,
   removeSync,
-  readFileSync,
+  readFile,
   copySync,
   writeFileSync,
   statSync,
@@ -77,11 +77,11 @@ const teardown = () => {
 };
 
 const test = (plan, desc, func, opts = {}) =>
-  tape.test(desc, opts, t => {
+  tape.test(desc, opts, async t => {
     setup();
     t.plan(plan);
     try {
-      func(t);
+      await func(t);
     } catch (err) {
       t.fail(err);
       t.end();
@@ -90,10 +90,16 @@ const test = (plan, desc, func, opts = {}) =>
     }
   });
 
-const listZipFiles = async filename =>
-  Object.keys((await new JSZip().loadAsync(readFileSync(filename))).files);
-const listZipFilesWithMetaData = async filename =>
-  Object((await new JSZip().loadAsync(readFileSync(filename))).files);
+const listZipFiles = async filename => {
+  const file = await readFile(filename);
+  const zip = await new JSZip().loadAsync(file);
+  return Object.keys(zip.files);
+};
+const listZipFilesWithMetaData = async filename => {
+  const file = await readFile(filename);
+  const zip = await new JSZip().loadAsync(file);
+  Object(zip.files);
+};
 const listRequirementsZipFiles = async filename => {
   const zip = await new JSZip().loadAsync(readFileSync(filename));
   const reqsBuffer = await zip.file('.requirements.zip').async('nodebuffer');
